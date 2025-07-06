@@ -6,7 +6,7 @@ void DrawButton(int posX, int posY, int width, int height, Color color){
   int mouseX = GetMouseX();
   int mouseY = GetMouseY();
   if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
-    if (mouseX >= width-posX && mouseX <= width+posX && mouseY >= height-posY && mouseY <= height+posY){
+    if (mouseX >= posX && mouseX <= width+posX && mouseY >= posY && mouseY <= height+posY){
       printf("hello world");
     }
   }
