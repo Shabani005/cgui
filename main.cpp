@@ -9,7 +9,7 @@ int main(void){
   while (!WindowShouldClose()){ 
     BeginDrawing();
     ClearBackground(BLACK);
-    if (DrawButton(250, 250, 50, 25, RED, WHITE,8.0f, "hello world")){
+    if (DrawButton(250, 250, 50, 25, RED, WHITE, 8.0f, "hello world")){
       printf("new print\n");
       showMessage = !showMessage;      
       // EnableEventWaiting() could be important maybe implement header
