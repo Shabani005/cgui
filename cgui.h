@@ -1,11 +1,26 @@
 #include "raylib.h"
 #include <cstdio>
 #include <string>
+#include <list>
+
+
+char* concatList(std::list<char> lst){
+  size_t size = lst.size();
+  char* cstr = new char[size+1];
+  size_t index = 0;
+  for (char ch : lst){
+    cstr[index++] = ch;
+  }
+  cstr[size] = '\0';
+  return cstr;
+}
+
 
 bool DrawButton(int posX, int posY, int width, int height, Color color, Color TextColor,float fontSize, std::string text = ""){
   DrawRectangle(posX, posY, width, height, color);
   DrawText(text.c_str(), posX, posY+height/4, fontSize, TextColor);
- // idk if Draw Text posX is centered yet. But Height IS centered. 
+  // Add optional Borders in the Future (with custom width)
+  // idk if Draw Text posX is centered yet. But Height IS centered. 
   int mouseX = GetMouseX();
   int mouseY = GetMouseY();
   
@@ -17,6 +32,44 @@ bool DrawButton(int posX, int posY, int width, int height, Color color, Color Te
   return false;
 }
 
-void DrawInputBox(){
-  
+
+// may need it to be a char instead of bool but can change later
+// Global or class member variable to persist text
+std::string inputText = "";
+bool inputBoxActive = false;
+
+bool DrawInputBox(int posX, int posY, int width, int height, Color TextColor, float fontSize, Color color = WHITE) {
+    DrawRectangle(posX, posY, width, height, color);
+    
+    int mouseX = GetMouseX();
+    int mouseY = GetMouseY();
+    
+        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+        if (mouseX >= posX && mouseX <= width + posX && 
+            mouseY >= posY && mouseY <= height + posY) {
+            inputBoxActive = true;
+        } else {
+            inputBoxActive = false;
+        }
+    }
+    
+    if (inputBoxActive) {
+        int key = GetCharPressed();
+        while (key > 0) {
+            if (key >= 32 && key <= 125) {  // Printable ASCII characters
+                inputText += (char)key;
+            }
+            key = GetCharPressed();
+        }
+        
+            if (IsKeyPressed(KEY_BACKSPACE) && !inputText.empty()) {
+                inputText.pop_back();
+        }
+    }
+    
+    DrawText(inputText.c_str(), posX + 5, posY + height/4, fontSize, TextColor);
+    
+    return inputBoxActive;
 }
+
+
