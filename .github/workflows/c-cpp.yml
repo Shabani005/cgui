@@ -1,0 +1,85 @@
+name: Build Project
+
+# Run this workflow on every push and pull request to the master branch
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    # Use a matrix to define all the combinations we want to build for.
+    strategy:
+      fail-fast: false # Don't cancel all jobs if one fails
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        # Add more configurations as needed
+        include:
+          # 64-bit builds
+          - os: ubuntu-latest
+            arch: x64
+            vcpkg_triplet: x64-linux
+          - os: windows-latest
+            arch: x64
+            vcpkg_triplet: x64-windows
+          - os: macos-latest
+            arch: x64
+            vcpkg_triplet: x64-osx
+          # 32-bit builds
+          - os: ubuntu-latest
+            arch: x86
+            vcpkg_triplet: x86-linux
+          - os: windows-latest
+            arch: x86
+            vcpkg_triplet: x86-windows
+          # ARM64 builds
+          - os: ubuntu-latest
+            arch: arm64
+            vcpkg_triplet: arm64-linux
+          - os: macos-latest # Apple Silicon
+            arch: arm64
+            vcpkg_triplet: arm64-osx
+
+    # The type of runner that the job will run on
+    runs-on: ${{ matrix.os }}
+
+    steps:
+    # 1. Check out your repository under $GITHUB_WORKSPACE
+    - name: Check out code
+      uses: actions/checkout@v4
+
+    # 2. Set up vcpkg for cross-platform dependency management
+    - name: Set up vcpkg
+      uses: lukka/run-vcpkg@v11
+      with:
+        vcpkgTriplet: ${{ matrix.vcpkg_triplet }}
+        vcpkgDirectory: ${{ runner.temp }}/vcpkg
+        runVcpkgInstall: true # Automatically run `vcpkg install`
+
+    # 3. Configure CMake
+    #    -B: build directory
+    #    -S: source directory
+    #    -D: CMake variable definitions
+    - name: Configure CMake
+      run: >
+        cmake -B build
+        -S .
+        -DCMAKE_BUILD_TYPE=Release
+        -DCMAKE_TOOLCHAIN_FILE=${{ runner.temp }}/vcpkg/scripts/buildsystems/vcpkg.cmake
+
+    # 4. Build the project
+    #    --config Release is important for multi-config generators like Visual Studio
+    - name: Build
+      run: cmake --build build --config Release
+
+    # 5. Upload the build artifact
+    #    This lets you download the compiled executable from the Actions tab.
+    - name: Upload Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: cgui-example-${{ matrix.os }}-${{ matrix.arch }}
+        path: |
+          build/cgui_example
+          build/Release/cgui_example.exe
+        if-no-files-found: ignore # Don't fail if the path is slightly different
