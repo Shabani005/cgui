@@ -5,7 +5,7 @@
 bool DrawButton(int posX, int posY, int width, int height, Color color, Color TextColor,float fontSize, std::string text = ""){
   DrawRectangle(posX, posY, width, height, color);
   DrawText(text.c_str(), posX, posY+height/4, fontSize, TextColor);
- // idk if Draw Text posX is centered yet. But Height it centered. 
+ // idk if Draw Text posX is centered yet. But Height IS centered. 
   int mouseX = GetMouseX();
   int mouseY = GetMouseY();
   
