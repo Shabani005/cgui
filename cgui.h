@@ -1,10 +1,14 @@
 #include "raylib.h"
 #include <cstdio>
+#include <string>
 
-bool DrawButton(int posX, int posY, int width, int height, Color color){
+bool DrawButton(int posX, int posY, int width, int height, Color color, float fontSize, std::string text = ""){
   DrawRectangle(posX, posY, width, height, color);
+  DrawText(text.c_str(), posX, posY, fontSize, color);
+  
   int mouseX = GetMouseX();
   int mouseY = GetMouseY();
+  
   if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
     if (mouseX >= posX && mouseX <= width+posX && mouseY >= posY && mouseY <= height+posY){
       return true;
@@ -13,6 +17,6 @@ bool DrawButton(int posX, int posY, int width, int height, Color color){
   return false;
 }
 
-void DrawTextBox(){
+void DrawInputBox(){
   
 }
