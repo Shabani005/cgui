@@ -1,4 +1,5 @@
 #include "raylib.h"
+#include <cmath>
 #include <cstdio>
 #include <string>
 #include <list>
@@ -72,4 +73,33 @@ bool DrawInputBox(int posX, int posY, int width, int height, Color TextColor, fl
     return inputBoxActive;
 }
 
+
+// to make a toggle I will draw 2 rectangles (to manipulate colors easily)
+// custom sizing with 50/50 defaults but not now
+bool DrawToggle(int posX, int posY, int width, int height, Color offColor, Color onColor){
+  
+  static bool isClicked = false;
+
+  DrawRectangle(posX, posY, width/2, height, offColor);
+  DrawRectangle(posX+width/2, posY, width/2, height, offColor);
+  DrawCircle(posX*1.05, posY*1.05, height/2, WHITE);
+ 
+
+  int mouseX = GetMouseX();
+  int mouseY = GetMouseY();
+  
+  if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)){
+    if (mouseX >= posX && mouseX <= width+posX && mouseY >= posY && mouseY <= height+posY){
+      isClicked = !isClicked;
+    } // move mouseover check before button pressed to add cool effects like glow when over
+  } // perhaps use Brighten 
+
+  if (isClicked){
+    offColor = GREEN; 
+  }
+
+  // DrawCircle(int centerX, int centerY, float radius, Color color)
+  
+  return true;
+}
 
