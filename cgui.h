@@ -103,3 +103,32 @@ bool DrawToggle(int posX, int posY, int width, int height, Color offColor, Color
   return true;
 }
 
+bool progressBar(int posX, int posY, int width, int height, Color baseColor, Color layerColor, float progress){
+  DrawRectangle(posX, posY, width, height, baseColor);
+  
+// width should be something like 0 + percentage scaling from progress (in which progress is passed by user) 
+
+  DrawRectangle(posX, posY, width*(progress/100), height, layerColor);
+
+  // DrawRectangle. Clear Background to reset the layer rectangle.
+  // Done in main file not header
+  
+  if (progress == 100){
+    return true;
+  }
+  return false;
+}
+
+int slider(int posX, int posY, int width, int height, Color baseColor, Color sliderColor, Color knobColor){
+  // maybe make the slider a float but maybe it doesnt matter as much
+  
+  float knobLoc = 0.0f; 
+
+  DrawRectangle(posX, posY, width, height, baseColor);
+  DrawRectangle(posX, posY, knobLoc, height, sliderColor);
+  DrawCircle(posX , int centerY, float radius, Color color);
+}
+
+
+
+
